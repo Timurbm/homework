@@ -13,7 +13,12 @@ class RequestAPI:
 
     def get_quote(self):
          
-        response = requests.get(self.url).json()
+        response = requests.get(self.url)
+
+        if response.status_code == 200:
+            response = response.json()
+        else:
+            response = None
 
         return response
     
@@ -30,13 +35,10 @@ class RequestAPI:
         return author["author"]
     
 
-    def name_list(self):
-        names = [
-        "Alibek",
-        "Zhanna",
-        "Timur",
-        "Aizhan"
-    ]
+    def name_list(self, name):
+        names = []
+        names.append({name})
+
         return ", ".join(names)    
 
 
@@ -152,17 +154,26 @@ def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "greeting": "Hola mi amiga!"})
 
  
-@app.get("/names", response_class=HTMLResponse)
-def names(request: Request):
+@app.get("/names")
+def names(request: Request, name):
     nam = {
         "request": request,
-        "n": my_request.name_list()
+        "n": my_request.name_list(name)
     }
 
     return templates.TemplateResponse("names.html", nam)
     
 
-@app.get("/names/{name}")
+@app.get("/quotes")
+def db(request: Request):
+    parameters = {
+        "request": request,
+        "content": my_request.get_content(),
+        "author": my_request.get_author()
+    }
+    return templates.TemplateResponse("quotes.html", parameters)
+
+@app.get("/quote/{name}")
 def db(request: Request, name):
     parameters = {
         "request": request,
@@ -174,7 +185,7 @@ def db(request: Request, name):
     #return my_request.get_text_with_quote_for_name(name)
 
 
-@app.get("/names/{name}/info")
+@app.get("/{name}/info")
 def information(request: Request, name):
     infor = {
         "request": request,
