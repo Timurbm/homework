@@ -1,5 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import requests
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
@@ -28,12 +31,12 @@ class RequestAPI:
     
 
     def name_list(self):
-        names = {
+        names = [
         "Alibek",
         "Zhanna",
         "Timur",
         "Aizhan"
-    }
+    ]
         return ", ".join(names)    
 
 
@@ -139,29 +142,47 @@ class RequestAPI:
 
 my_request = RequestAPI()
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
 
 @app.get("/")
-def index():
+def index(request: Request):
     
-    return "RAWAN especially for you! Changes! Welcome dear guest to our meeting! Always glad to see you here!"
+    return templates.TemplateResponse("index.html", {"request": request, "greeting": "Hola mi amiga!"})
 
  
-@app.get("/names")
-def names():
+@app.get("/names", response_class=HTMLResponse)
+def names(request: Request):
+    nam = {
+        "request": request,
+        "n": my_request.name_list()
+    }
 
-    return my_request.name_list()
+    return templates.TemplateResponse("names.html", nam)
     
 
 @app.get("/names/{name}")
-def db(name):
-    
-    return my_request.get_text_with_quote_for_name(name)
+def db(request: Request, name):
+    parameters = {
+        "request": request,
+        "name": name,
+        "content": my_request.get_content(),
+        "author": my_request.get_author()
+    }
+    return templates.TemplateResponse("quote.html", parameters)
+    #return my_request.get_text_with_quote_for_name(name)
 
 
 @app.get("/names/{name}/info")
-def info(name):
+def information(request: Request, name):
+    infor = {
+        "request": request,
+        "name": name,
+        "in": my_request.get_name_info(name)        
+    }
     
-    return my_request.get_name_info(name)
+    return templates.TemplateResponse("info.html", infor)
 
 
 @app.get("/country")
@@ -174,3 +195,8 @@ def country():
 def country_one(country):
     
     return my_request.get_country(country)
+
+@app.get("/items/{id}", response_class=HTMLResponse)
+async def read_item(request: Request, id: str):
+    return templates.TemplateResponse("names.html", {"request": request, "id": id})
+
