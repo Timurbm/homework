@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi import responses
 import requests
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -104,7 +105,7 @@ class RequestAPI:
         return ", ".join(country)    
     
     
-    def get_country(self, country):
+    def get_country1(self, country):
         info = {
             "USA": {
                 "President": "Joe Biden",
@@ -151,7 +152,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/")
 def index(request: Request):
     
-    return templates.TemplateResponse("index.html", {"request": request, "greeting": "Hola mi amiga!"})
+    return templates.TemplateResponse("index.html", {"request": request})
 
  
 @app.get("/names")
@@ -207,12 +208,26 @@ def country_one(country):
     
     return my_request.get_country(country)
 
+
+@app.get("/covid-statistics")
+def covid(request: Request):
+    url = "https://api.covid19api.com/world/total"
+    response = requests.get(url).json()
+
+    param = {
+        "request": request,
+        "statistics": response
+    }
+    
+    return templates.TemplateResponse("covid-statistics.html", param)
+
+
 @app.get("/about")
-def index(request: Request):
+def about(request: Request):
     
     return templates.TemplateResponse("about.html", {"request": request})
+
 
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: str):
     return templates.TemplateResponse("names.html", {"request": request, "id": id})
-

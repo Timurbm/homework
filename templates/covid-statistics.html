@@ -1,0 +1,9 @@
+{% extends "Base.html" %}
+
+{% block content %}
+<h1>World statistics on covid-19</h1>
+<br>
+<div> <b>Confirmed: </b>{{statistics["TotalConfirmed"]}} </div>
+<div> <b>Mortality: </b>{{statistics["TotalDeaths"]}} </div>
+<div> <b>Recovered: </b>{{statistics["TotalRecovered"]}} </div>
+{% endblock %}
