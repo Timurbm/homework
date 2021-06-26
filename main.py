@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi import responses
 import requests
+import random
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -228,6 +229,19 @@ def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
 
 
-@app.get("/items/{id}", response_class=HTMLResponse)
-async def read_item(request: Request, id: str):
-    return templates.TemplateResponse("names.html", {"request": request, "id": id})
+@app.get("/quotes/api/socrates")
+def socrates():
+    quotes = [
+        "Nature has endowed us with two eyes, two ears, but only one language, so that we look and listen more than we speak.",
+        "There is a sun in every person. Just let it shine.",
+        "I know I don’t know anything, but others don’t know that either.",
+        "Nobody is your friend, nobody is your enemy, but every person is your teacher.",
+        "Win your friends not with empty flattery, but with sincere words of love.",
+        "Nothing can harm a good person, neither in life nor after death."
+    ]
+
+    random_quote = random.choice(quotes)
+
+    return {
+        "quote": random_quote
+    }
