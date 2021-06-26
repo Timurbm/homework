@@ -173,7 +173,7 @@ def db(request: Request):
     }
     return templates.TemplateResponse("quotes.html", parameters)
 
-@app.get("/quote/{name}")
+@app.get("/quotes/{name}")
 def db(request: Request, name):
     parameters = {
         "request": request,
@@ -181,7 +181,7 @@ def db(request: Request, name):
         "content": my_request.get_content(),
         "author": my_request.get_author()
     }
-    return templates.TemplateResponse("quote.html", parameters)
+    return templates.TemplateResponse("quotes.html", parameters)
     #return my_request.get_text_with_quote_for_name(name)
 
 
@@ -206,6 +206,11 @@ def country():
 def country_one(country):
     
     return my_request.get_country(country)
+
+@app.get("/about")
+def index(request: Request):
+    
+    return templates.TemplateResponse("about.html", {"request": request})
 
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: str):

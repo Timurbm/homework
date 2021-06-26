@@ -1,13 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
-    <title>Greetings Page</title>
-</head>
-<body>
-   <h1> {{ greeting }} This is greeting PAGE! </h1>
-</body>
-</html>
+{% extends "Base.html" %}
+
+{% block content %}
+<div><b>Welcome to our pet-project</b></div><br>
+<div>The project was implemented at Python, FastAPI</div><br>
+
+<div>
+    Learned tools like:<br><br>
+    <ul>
+        <li>the basics of programming</li>
+        <li>Python</li>
+        <li>framework FastAPI</li>
+        <li>OOP</li>
+        <li>Deploy to Heroku</li>
+        <li>exc ...</li>
+    </ul>
+</div>
+
+<div>
+    Website still in progress
+</div>
+{% endblock %}
