@@ -37,11 +37,11 @@ class RequestAPI:
         return author["author"]
     
 
-    def name_list(self, name):
+    def get_names(self, name):
         names = []
         names.append({name})
 
-        return ", ".join(names)    
+        return ", ".join(names) 
 
 
     def get_text_with_quote_for_name(self, name):
@@ -158,12 +158,14 @@ def index(request: Request):
  
 @app.get("/names")
 def names(request: Request, name):
-    nam = {
+
+    p = {
         "request": request,
-        "n": my_request.name_list(name)
+        "name": name,
+        "names": my_request.get_names()
     }
 
-    return templates.TemplateResponse("names.html", nam)
+    return templates.TemplateResponse("names.html", p)
     
 
 @app.get("/quotes")
